@@ -84,27 +84,28 @@
                 echo "</div>";
             }
         } elseif ($action === 'update' && isset($_GET['id'])) {
-            // Exemple de mise à jour d'un utilisateur
-            $id = $_GET['id'];
-            $utilisateurMisAJour = [
-                'nom' => 'Durand',
-                'prenom' => 'Marie',
-                'age' => 25,
-                'adresse' => '456 Rue Exemple'
-            ];
+            $id = intval($_GET['id']);
+            $utilisateur = readUsers($id);
 
-            // Passer les valeurs séparément à la fonction updateUser
-            $resultat = updateUser(
-                $id,
-                $utilisateurMisAJour['nom'],
-                $utilisateurMisAJour['prenom'],
-                $utilisateurMisAJour['age'],
-                $utilisateurMisAJour['adresse']
-            );
-
-            echo $resultat
-                ? "<p class='text-green-500'>Utilisateur mis à jour avec succès !</p>"
-                : "<p class='text-red-500'>Erreur lors de la mise à jour de l'utilisateur.</p>";
+            if ($utilisateur) {
+                // Afficher un formulaire pour modifier l'utilisateur
+                ?>
+                <form action="updateUser.php" method="POST">
+                    <input type="hidden" name="id" value="<?= htmlspecialchars($utilisateur['id']) ?>">
+                    <label for="nom">Nom :</label>
+                    <input type="text" name="nom" id="nom" value="<?= htmlspecialchars($utilisateur['nom']) ?>" required>
+                    <label for="prenom">Prénom :</label>
+                    <input type="text" name="prenom" id="prenom" value="<?= htmlspecialchars($utilisateur['prenom']) ?>" required>
+                    <label for="age">Âge :</label>
+                    <input type="number" name="age" id="age" value="<?= htmlspecialchars($utilisateur['age']) ?>">
+                    <label for="adresse">Adresse :</label>
+                    <input type="text" name="adresse" id="adresse" value="<?= htmlspecialchars($utilisateur['adresse']) ?>">
+                    <button type="submit">Enregistrer</button>
+                </form>
+                <?php
+            } else {
+                echo "Utilisateur introuvable.";
+            }
         } elseif ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $nom = $_POST['nom'];
@@ -139,6 +140,28 @@
             exit(); // Assurez-vous de terminer le script après la redirection
         }
         ?>
+
+        <!-- Formulaire pour choisir un utilisateur à modifier -->
+        <?php
+        // Inclure les fonctions SQL
+        require_once 'mesFonctionsSQL.php';
+
+        // Récupérer tous les utilisateurs
+        $utilisateurs = getAllUsers();
+        ?>
+
+        <form action="index.php?action=update" method="GET">
+            <label for="user">Choisissez un utilisateur à modifier :</label>
+            <select name="id" id="user" required>
+                <option value="">-- Sélectionnez un utilisateur --</option>
+                <?php foreach ($utilisateurs as $utilisateur): ?>
+                    <option value="<?= htmlspecialchars($utilisateur['id']) ?>">
+                        <?= htmlspecialchars($utilisateur['nom'] . ' ' . $utilisateur['prenom']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit">Modifier</button>
+        </form>
     </div>
 
     <!-- Modal pour modifier un utilisateur -->
