@@ -1,0 +1,15 @@
+# Fichiers sensibles
+config.php
+.env
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
+
+# Dossiers spécifiques
+vendor/
+node_modules/
