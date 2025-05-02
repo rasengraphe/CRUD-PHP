@@ -83,47 +83,52 @@
                 }
                 echo "</div>";
             }
-        } elseif ($action === 'update' && isset($_GET['id'])) {
-            $id = intval($_GET['id']);
-            $utilisateur = readUsers($id);
+        } elseif ($action === 'update') {
+            // Récupérer tous les utilisateurs pour la liste déroulante
+            $utilisateurs = getAllUsers();
 
-            if ($utilisateur) {
-                // Afficher un formulaire pour modifier l'utilisateur
+            // Vérifiez si un ID est fourni pour modifier un utilisateur spécifique
+            if (isset($_GET['id'])) {
+                $id = intval($_GET['id']);
+                $utilisateur = readUsers($id);
+
+                if ($utilisateur) {
+                    // Afficher un formulaire pré-rempli pour modifier l'utilisateur
+                    ?>
+                    <form action="updateUser.php" method="POST">
+                        <input type="hidden" name="id" value="<?= htmlspecialchars($utilisateur['id'] ?? '') ?>">
+                        <label for="nom">Nom :</label>
+                        <input type="text" name="nom" id="nom" value="<?= htmlspecialchars($utilisateur['nom'] ?? '') ?>" required>
+                        <label for="prenom">Prénom :</label>
+                        <input type="text" name="prenom" id="prenom" value="<?= htmlspecialchars($utilisateur['prenom'] ?? '') ?>" required>
+                        <label for="age">Âge :</label>
+                        <input type="number" name="age" id="age" value="<?= htmlspecialchars($utilisateur['age'] ?? '') ?>">
+                        <label for="adresse">Adresse :</label>
+                        <input type="text" name="adresse" id="adresse" value="<?= htmlspecialchars($utilisateur['adresse'] ?? '') ?>">
+                        <button type="submit">Enregistrer</button>
+                    </form>
+                    <?php
+                } else {
+                    echo "<p class='text-red-500'>Utilisateur introuvable.</p>";
+                }
+            } else {
+                // Afficher le formulaire pour choisir un utilisateur à modifier
                 ?>
-                <form action="updateUser.php" method="POST">
-                    <input type="hidden" name="id" value="<?= htmlspecialchars($utilisateur['id']) ?>">
-                    <label for="nom">Nom :</label>
-                    <input type="text" name="nom" id="nom" value="<?= htmlspecialchars($utilisateur['nom']) ?>" required>
-                    <label for="prenom">Prénom :</label>
-                    <input type="text" name="prenom" id="prenom" value="<?= htmlspecialchars($utilisateur['prenom']) ?>" required>
-                    <label for="age">Âge :</label>
-                    <input type="number" name="age" id="age" value="<?= htmlspecialchars($utilisateur['age']) ?>">
-                    <label for="adresse">Adresse :</label>
-                    <input type="text" name="adresse" id="adresse" value="<?= htmlspecialchars($utilisateur['adresse']) ?>">
-                    <button type="submit">Enregistrer</button>
+                <form action="index.php" method="GET">
+                    <input type="hidden" name="action" value="update">
+                    <label for="user">Choisissez un utilisateur à modifier :</label>
+                    <select name="id" id="user" required>
+                        <option value="">-- Sélectionnez un utilisateur --</option>
+                        <?php foreach ($utilisateurs as $utilisateur): ?>
+                            <option value="<?= htmlspecialchars($utilisateur['id']) ?>">
+                                <?= htmlspecialchars($utilisateur['nom'] . ' ' . $utilisateur['prenom']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Modifier</button>
                 </form>
                 <?php
-            } else {
-                echo "Utilisateur introuvable.";
             }
-        } elseif ($action === 'update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'];
-            $nom = $_POST['nom'];
-            $prenom = $_POST['prenom'];
-            $age = $_POST['age'] !== '' ? $_POST['age'] : null;
-            $adresse = $_POST['adresse'] !== '' ? $_POST['adresse'] : null;
-
-            $resultat = updateUser($id, $nom, $prenom, $age, $adresse);
-
-            if ($resultat) {
-                echo "<p class='text-green-500'>Utilisateur mis à jour avec succès !</p>";
-            } else {
-                echo "<p class='text-red-500'>Erreur lors de la mise à jour de l'utilisateur.</p>";
-            }
-
-            // Redirection pour mettre à jour la page
-            header("Location: index.php");
-            exit();
         } elseif ($action === 'delete' && isset($_GET['id'])) {
             // Suppression d'un utilisateur
             $id = $_GET['id'];
