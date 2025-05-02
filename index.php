@@ -138,6 +138,42 @@
             // Redirection pour mettre à jour la page
             header("Location: index.php");
             exit(); // Assurez-vous de terminer le script après la redirection
+        } elseif ($action === 'delete') {
+            // Récupérer tous les utilisateurs pour la liste déroulante
+            $utilisateurs = getAllUsers();
+
+            // Vérifier si un ID est fourni pour supprimer un utilisateur spécifique
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+                $id = intval($_POST['id']);
+                $resultat = deleteUser($id);
+
+                // Afficher un message de succès ou d'erreur
+                if ($resultat) {
+                    echo "<p class='text-green-500'>Utilisateur supprimé avec succès !</p>";
+                } else {
+                    echo "<p class='text-red-500'>Erreur lors de la suppression de l'utilisateur.</p>";
+                }
+
+                // Redirection pour mettre à jour la page
+                header("Location: index.php?action=delete");
+                exit();
+            } else {
+                // Afficher le formulaire avec la liste déroulante
+                ?>
+                <form action="index.php?action=delete" method="POST">
+                    <label for="user">Choisissez un utilisateur à supprimer :</label>
+                    <select name="id" id="user" required>
+                        <option value="">-- Sélectionnez un utilisateur --</option>
+                        <?php foreach ($utilisateurs as $utilisateur): ?>
+                            <option value="<?= htmlspecialchars($utilisateur['id']) ?>">
+                                <?= htmlspecialchars($utilisateur['nom'] . ' ' . $utilisateur['prenom']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Supprimer</button>
+                </form>
+                <?php
+            }
         }
         ?>
 
@@ -150,19 +186,6 @@
         $utilisateurs = getAllUsers();
         ?>
 
-        <form action="index.php?action=update" method="GET">
-            <label for="user">Choisissez un utilisateur à modifier :</label>
-            <select name="id" id="user" required>
-                <option value="">-- Sélectionnez un utilisateur --</option>
-                <?php foreach ($utilisateurs as $utilisateur): ?>
-                    <option value="<?= htmlspecialchars($utilisateur['id']) ?>">
-                        <?= htmlspecialchars($utilisateur['nom'] . ' ' . $utilisateur['prenom']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <button type="submit">Modifier</button>
-        </form>
-    </div>
 
     <!-- Modal pour modifier un utilisateur -->
     <div id="modal-update" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
