@@ -95,21 +95,52 @@
                 if ($utilisateur) {
                     // Afficher un formulaire pré-rempli pour modifier l'utilisateur
                     ?>
-                    <form action="updateUser.php" method="POST">
-                        <input type="hidden" name="id" value="<?= htmlspecialchars($utilisateur['id'] ?? '') ?>">
-                        <label for="nom">Nom :</label>
-                        <input type="text" name="nom" id="nom" value="<?= htmlspecialchars($utilisateur['nom'] ?? '') ?>" required>
-                        <label for="prenom">Prénom :</label>
-                        <input type="text" name="prenom" id="prenom" value="<?= htmlspecialchars($utilisateur['prenom'] ?? '') ?>" required>
-                        <label for="age">Âge :</label>
-                        <input type="number" name="age" id="age" value="<?= htmlspecialchars($utilisateur['age'] ?? '') ?>">
-                        <label for="adresse">Adresse :</label>
-                        <input type="text" name="adresse" id="adresse" value="<?= htmlspecialchars($utilisateur['adresse'] ?? '') ?>">
-                        <button type="submit">Enregistrer</button>
-                    </form>
+                    <div class="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6">
+                        <h2 class="text-2xl font-bold text-center text-blue-600 mb-4">Modifier l'utilisateur</h2>
+                        <form action="updateUser.php" method="POST" class="space-y-4">
+                            <!-- Champ caché pour l'ID -->
+                            <input type="hidden" name="id" value="<?= htmlspecialchars($utilisateur['id'] ?? '') ?>">
+
+                            <!-- Champ Nom -->
+                            <div>
+                                <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+                                <input type="text" name="nom" id="nom" value="<?= htmlspecialchars($utilisateur['nom'] ?? '') ?>" 
+                                       class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+
+                            <!-- Champ Prénom -->
+                            <div>
+                                <label for="prenom" class="block text-sm font-medium text-gray-700">Prénom</label>
+                                <input type="text" name="prenom" id="prenom" value="<?= htmlspecialchars($utilisateur['prenom'] ?? '') ?>" 
+                                       class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+
+                            <!-- Champ Âge -->
+                            <div>
+                                <label for="age" class="block text-sm font-medium text-gray-700">Âge</label>
+                                <input type="number" name="age" id="age" value="<?= htmlspecialchars($utilisateur['age'] ?? '') ?>" 
+                                       class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+
+                            <!-- Champ Adresse -->
+                            <div>
+                                <label for="adresse" class="block text-sm font-medium text-gray-700">Adresse</label>
+                                <input type="text" name="adresse" id="adresse" value="<?= htmlspecialchars($utilisateur['adresse'] ?? '') ?>" 
+                                       class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+
+                            <!-- Bouton Enregistrer -->
+                            <div class="flex justify-end">
+                                <button type="submit" 
+                                        class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    Enregistrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                     <?php
                 } else {
-                    echo "<p class='text-red-500'>Utilisateur introuvable.</p>";
+                    echo "<p class='text-red-500 text-center'>Utilisateur introuvable.</p>";
                 }
             } else {
                 // Afficher le formulaire pour choisir un utilisateur à modifier
